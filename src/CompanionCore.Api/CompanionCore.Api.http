@@ -1,0 +1,6 @@
+@CompanionCore.Api_HostAddress = http://localhost:5249
+
+GET {{CompanionCore.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
