@@ -15,6 +15,12 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\src\CompanionCore.Api\CompanionCore.Api.csproj" />
+    <ProjectReference Include="..\..\src\CompanionCore.Core\CompanionCore.Core.csproj" />
+    <ProjectReference Include="..\..\src\CompanionCore.Infrastructure\CompanionCore.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="Xunit" />
   </ItemGroup>
 

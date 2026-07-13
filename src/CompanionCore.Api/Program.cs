@@ -1,5 +1,8 @@
 using CompanionCore.Api.Endpoints;
 
+using CompanionCore.Core.Interfaces;
+using CompanionCore.Infrastructure.Services;
+
 namespace CompanionCore.Api;
 
 public class Program
@@ -8,18 +11,24 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
-        builder.Services.AddOpenApi();
+        builder.Services.AddEndpointsApiExplorer();
+
+        builder.Services.AddSwaggerGen();
+
+        builder.Services.AddScoped<IChatService, OllamaChatService>();
 
         var app = builder.Build();
 
         if (app.Environment.IsDevelopment())
         {
-            app.MapOpenApi();
+            app.UseSwagger();
+            app.UseSwaggerUI();
         }
 
         app.UseHttpsRedirection();
 
         app.MapStatusEndpoints();
+        app.MapChatEndpoints();
 
         app.Run();
     }
