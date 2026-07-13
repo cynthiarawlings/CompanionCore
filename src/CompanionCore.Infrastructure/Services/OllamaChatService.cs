@@ -1,21 +1,49 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
+﻿using Microsoft.Extensions.Http;
+using System.Net.Http.Json;
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Core.Models;
+using CompanionCore.Infrastructure.Models;
 
 namespace CompanionCore.Infrastructure.Services;
 
 public class OllamaChatService : IChatService
 {
-    public Task<ChatResponse> ChatAsync(ChatRequest request)
+    private readonly HttpClient _httpClient;
+
+    public OllamaChatService(IHttpClientFactory httpClientFactory)
     {
-        var response = new ChatResponse
+        _httpClient = httpClientFactory.CreateClient("Ollama");
+    }
+
+    public async Task<ChatResponse> ChatAsync(ChatRequest request)
+    {
+        var ollamaRequest = new OllamaChatRequest
         {
-            Response = $"You said: {request.Message}"
+            Model = "llama3:latest",
+            Stream = false,
+            Messages =
+            [
+                new OllamaMessage
+                {
+                    Role = "user",
+                    Content = request.Message
+                }
+            ]
         };
 
-        return Task.FromResult(response);
+        var response = await _httpClient.PostAsJsonAsync(
+            "/api/chat",
+            ollamaRequest);
+
+        response.EnsureSuccessStatusCode();
+
+        var ollamaResponse =
+            await response.Content.ReadFromJsonAsync<OllamaChatResponse>();
+
+        return new ChatResponse
+        {
+            Response = ollamaResponse?.Message.Content
+                ?? "No response received."
+        };
     }
 }

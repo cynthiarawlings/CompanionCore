@@ -17,4 +17,8 @@ Completed:
 - Added POST /api/chat endpoint
 - Verified API-to-service communication
 
+## Milestone 0.3 — Connect CompanionCore to Ollama
+
+Completed:
+- Connect CompanionCore to Ollama
 
