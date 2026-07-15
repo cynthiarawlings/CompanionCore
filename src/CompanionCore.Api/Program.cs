@@ -3,6 +3,8 @@ using CompanionCore.Api.Endpoints;
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Infrastructure.Configuration;
 using CompanionCore.Infrastructure.Services;
+using CompanionCore.Infrastructure.Persistence;
+using Microsoft.EntityFrameworkCore;
 
 namespace CompanionCore.Api;
 
@@ -22,6 +24,9 @@ public class Program
 
         builder.Services.Configure<OllamaOptions>(
             builder.Configuration.GetSection("Ollama"));
+
+        builder.Services.AddDbContext<CompanionDbContext>(options =>
+            options.UseSqlite("Data Source=CompanionCore.db"));
 
         builder.Services.AddScoped<IChatService, OllamaChatService>();
 
