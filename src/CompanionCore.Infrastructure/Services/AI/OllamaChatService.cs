@@ -3,8 +3,9 @@ using System.Net.Http.Json;
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Core.Models;
 using CompanionCore.Infrastructure.Models;
+using CompanionCore.Infrastructure.Prompts;
 
-namespace CompanionCore.Infrastructure.Services;
+namespace CompanionCore.Infrastructure.Services.AI;
 
 public class OllamaChatService : IChatService
 {
@@ -23,6 +24,12 @@ public class OllamaChatService : IChatService
             Stream = false,
             Messages =
             [
+                new OllamaMessage
+                {
+                    Role = "system",
+                    Content = DottorePrompt.SystemPrompt
+                },
+
                 new OllamaMessage
                 {
                     Role = "user",

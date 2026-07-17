@@ -2,9 +2,10 @@ using CompanionCore.Api.Endpoints;
 
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Infrastructure.Configuration;
-using CompanionCore.Infrastructure.Services;
 using CompanionCore.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
+using CompanionCore.Infrastructure.Services.AI;
+using CompanionCore.Infrastructure.Services.Conversations;
 
 namespace CompanionCore.Api;
 
@@ -29,6 +30,7 @@ public class Program
             options.UseSqlite("Data Source=CompanionCore.db"));
 
         builder.Services.AddScoped<IChatService, OllamaChatService>();
+        builder.Services.AddScoped<IConversationService, ConversationService>();
 
         var app = builder.Build();
 

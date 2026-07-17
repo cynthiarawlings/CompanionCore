@@ -9,9 +9,9 @@ public static class ChatEndpoints
     {
         app.MapPost("/api/chat", async (
             ChatRequest request,
-            IChatService chatService) =>
+            IConversationService conversationService) =>
         {
-            var response = await chatService.ChatAsync(request);
+            var response = await conversationService.ChatAsync(request);
 
             return Results.Ok(response);
         });
