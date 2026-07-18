@@ -1,4 +1,5 @@
-﻿using CompanionCore.Core.Conversations;
+﻿using CompanionCore.Core.Companions;
+using CompanionCore.Core.Conversations;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.VisualBasic;
 using System;
@@ -9,12 +10,16 @@ namespace CompanionCore.Infrastructure.Persistence;
 
 public class CompanionDbContext : DbContext
 {
-    public CompanionDbContext(DbContextOptions<CompanionDbContext> options)
+    public CompanionDbContext(
+        DbContextOptions<CompanionDbContext> options)
         : base(options)
     {
     }
 
+    public DbSet<Companion> Companions => Set<Companion>();
+
     public DbSet<Conversation> Conversations => Set<Conversation>();
 
-    public DbSet<ConversationMessage> ConversationMessages => Set<ConversationMessage>();
+    public DbSet<ConversationMessage> ConversationMessages =>
+        Set<ConversationMessage>();
 }

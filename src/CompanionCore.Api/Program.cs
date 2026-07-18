@@ -1,11 +1,11 @@
 using CompanionCore.Api.Endpoints;
-
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Infrastructure.Configuration;
 using CompanionCore.Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 using CompanionCore.Infrastructure.Services.AI;
 using CompanionCore.Infrastructure.Services.Conversations;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 
 namespace CompanionCore.Api;
 
@@ -18,16 +18,21 @@ public class Program
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
-        builder.Services.AddHttpClient("Ollama", client =>
+        builder.Services.AddHttpClient("Ollama", (services, client) =>
         {
-            client.BaseAddress = new Uri("http://localhost:11434");
+            var options = services
+                .GetRequiredService<IOptions<OllamaOptions>>()
+                .Value;
+
+            client.BaseAddress = new Uri(options.BaseUrl);
         });
 
         builder.Services.Configure<OllamaOptions>(
             builder.Configuration.GetSection("Ollama"));
 
         builder.Services.AddDbContext<CompanionDbContext>(options =>
-            options.UseSqlite("Data Source=CompanionCore.db"));
+            options.UseSqlServer(
+                builder.Configuration.GetConnectionString("CompanionCore")));
 
         builder.Services.AddScoped<IChatService, OllamaChatService>();
         builder.Services.AddScoped<IConversationService, ConversationService>();

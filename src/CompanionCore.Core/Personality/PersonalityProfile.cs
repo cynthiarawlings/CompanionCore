@@ -8,7 +8,7 @@ namespace CompanionCore.Core.Personality
     {
         public string Summary { get; set; } = string.Empty;
 
-        public List<string> Traits { get; set; } = [];
+        public string Traits { get; set; } = string.Empty;
 
         public string SpeakingStyle { get; set; } = string.Empty;
 

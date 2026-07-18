@@ -8,7 +8,13 @@ public class Conversation
 {
     public Guid Id { get; set; }
 
-    public DateTime StartedAt { get; set; } = DateTime.UtcNow;
+    public Guid CompanionId { get; set; }
+
+    public DateTime StartedAt { get; set; }
+
+    public DateTime? LastMessageAt { get; set; }
+
+    public string? Title { get; set; }
 
     public List<ConversationMessage> Messages { get; set; } = [];
 }

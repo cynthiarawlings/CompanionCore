@@ -7,7 +7,17 @@ namespace CompanionCore.Core.Companions;
 
 public class Companion
 {
-    public CompanionIdentity Identity { get; set; } = new();
+    public Guid Id { get; set; }
 
-    public PersonalityProfile Personality { get; set; } = new();
+    public string Name { get; set; } = string.Empty;
+
+    public string Universe { get; set; } = string.Empty;
+
+    public string Description { get; set; } = string.Empty;
+
+    public string PersonalitySummary { get; set; } = string.Empty;
+
+    public string SpeakingStyle { get; set; } = string.Empty;
+
+    public string SystemPrompt { get; set; } = string.Empty;
 }
