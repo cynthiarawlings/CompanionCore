@@ -15,6 +15,17 @@ public class Program
     {
         var builder = WebApplication.CreateBuilder(args);
 
+        builder.Services.AddCors(options =>
+        {
+            options.AddPolicy("React",
+                policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173")
+                          .AllowAnyHeader()
+                          .AllowAnyMethod();
+                });
+        });
+
         builder.Services.AddEndpointsApiExplorer();
         builder.Services.AddSwaggerGen();
 
@@ -47,8 +58,11 @@ public class Program
 
         app.UseHttpsRedirection();
 
+        app.UseCors("React");
+
         app.MapStatusEndpoints();
         app.MapChatEndpoints();
+        app.MapCompanionEndpoints();
 
         app.Run();
     }

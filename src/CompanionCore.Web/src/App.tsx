@@ -1,23 +1,43 @@
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import CompanionListPage from "./pages/CompanionListPage";
+import CreateCompanionPage from "./pages/CreateCompanionPage";
+import EditCompanionPage from "./pages/EditCompanionPage";
+import ChatPage from "./pages/ChatPage";
+
+
 export default function App() {
+
     return (
-        <div
-            style={{
-                maxWidth: "900px",
-                margin: "40px auto",
-                fontFamily: "Segoe UI"
-            }}
-        >
-            <h1>CompanionCore</h1>
+        <BrowserRouter>
 
-            <hr />
+            <Routes>
 
-            <h2>Companions</h2>
+                <Route
+                    path="/"
+                    element={<CompanionListPage />}
+                />
 
-            <p>No companions yet.</p>
 
-            <button>
-                + New Companion
-            </button>
-        </div>
+                <Route
+                    path="/companions/new"
+                    element={<CreateCompanionPage />}
+                />
+
+
+                <Route
+                    path="/companions/:id/edit"
+                    element={<EditCompanionPage />}
+                />
+
+
+                <Route
+                    path="/chat/:id"
+                    element={<ChatPage />}
+                />
+
+            </Routes>
+
+        </BrowserRouter>
     );
 }
