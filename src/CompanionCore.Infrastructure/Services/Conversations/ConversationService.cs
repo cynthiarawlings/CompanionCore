@@ -1,4 +1,5 @@
-﻿using CompanionCore.Core.Interfaces;
+﻿using CompanionCore.Core.Conversations;
+using CompanionCore.Core.Interfaces;
 using CompanionCore.Core.Models;
 using CompanionCore.Infrastructure.Persistence;
 
@@ -19,6 +20,67 @@ public class ConversationService : IConversationService
 
     public async Task<ChatResponse> ChatAsync(ChatRequest request)
     {
-        return await _chatService.ChatAsync(request);
+        var conversation = request.ConversationId.HasValue
+            ? await _dbContext.Conversations
+                .FindAsync(request.ConversationId.Value)
+            : null;
+
+
+        if (conversation == null)
+        {
+            conversation = new Conversation
+            {
+                Id = Guid.NewGuid(),
+                CompanionId = request.CompanionId,
+                StartedAt = DateTime.UtcNow
+            };
+
+
+            _dbContext.Conversations.Add(conversation);
+
+            await _dbContext.SaveChangesAsync();
+        }
+
+
+        var userMessage = new ConversationMessage
+        {
+            Id = Guid.NewGuid(),
+            ConversationId = conversation.Id,
+            Role = "user",
+            Content = request.Message
+        };
+
+
+        _dbContext.ConversationMessages.Add(userMessage);
+
+
+        await _dbContext.SaveChangesAsync();
+
+
+
+        var response = await _chatService.ChatAsync(request);
+
+
+
+        var assistantMessage = new ConversationMessage
+        {
+            Id = Guid.NewGuid(),
+            ConversationId = conversation.Id,
+            Role = "assistant",
+            Content = response.Response
+        };
+
+
+        _dbContext.ConversationMessages.Add(assistantMessage);
+
+
+        conversation.LastMessageAt = DateTime.UtcNow;
+
+
+        await _dbContext.SaveChangesAsync();
+
+
+
+        return response;
     }
 }

@@ -27,7 +27,7 @@ public class OllamaChatService : IChatService
                 new OllamaMessage
                 {
                     Role = "system",
-                    Content = DottorePrompt.SystemPrompt
+                    //Content = DottorePrompt.SystemPrompt
                 },
 
                 new OllamaMessage

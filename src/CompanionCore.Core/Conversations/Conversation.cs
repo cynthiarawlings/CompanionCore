@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 
+using CompanionCore.Core.Companions;
+
 namespace CompanionCore.Core.Conversations;
 
 public class Conversation
@@ -9,6 +11,8 @@ public class Conversation
     public Guid Id { get; set; }
 
     public Guid CompanionId { get; set; }
+
+    public Companion? Companion { get; set; }
 
     public DateTime StartedAt { get; set; }
 
