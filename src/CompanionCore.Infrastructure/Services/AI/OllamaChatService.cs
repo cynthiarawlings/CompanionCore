@@ -1,9 +1,8 @@
-﻿using Microsoft.Extensions.Http;
-using System.Net.Http.Json;
+﻿using System.Net.Http.Json;
+using System.Linq;
 using CompanionCore.Core.Interfaces;
 using CompanionCore.Core.Models;
 using CompanionCore.Infrastructure.Models;
-using CompanionCore.Infrastructure.Prompts;
 
 namespace CompanionCore.Infrastructure.Services.AI;
 
@@ -16,26 +15,20 @@ public class OllamaChatService : IChatService
         _httpClient = httpClientFactory.CreateClient("Ollama");
     }
 
-    public async Task<ChatResponse> ChatAsync(ChatRequest request)
+    public async Task<ChatResponse> ChatAsync(
+        List<ChatMessage> messages)
     {
         var ollamaRequest = new OllamaChatRequest
         {
             Model = "llama3:latest",
             Stream = false,
-            Messages =
-            [
-                new OllamaMessage
+            Messages = messages
+                .Select(m => new OllamaMessage
                 {
-                    Role = "system",
-                    //Content = DottorePrompt.SystemPrompt
-                },
-
-                new OllamaMessage
-                {
-                    Role = "user",
-                    Content = request.Message
-                }
-            ]
+                    Role = m.Role,
+                    Content = m.Content
+                })
+                .ToList()
         };
 
         var response = await _httpClient.PostAsJsonAsync(

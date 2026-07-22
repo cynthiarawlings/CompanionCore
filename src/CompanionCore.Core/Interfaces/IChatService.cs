@@ -7,6 +7,7 @@ namespace CompanionCore.Core.Interfaces
 {
     public interface IChatService
     {
-        Task<ChatResponse> ChatAsync(ChatRequest request);
+        Task<ChatResponse> ChatAsync(
+            List<ChatMessage> messages);
     }
 }

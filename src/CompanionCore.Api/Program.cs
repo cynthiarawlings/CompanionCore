@@ -62,6 +62,7 @@ public class Program
 
         app.MapStatusEndpoints();
         app.MapChatEndpoints();
+        app.MapConversationEndpoints();
         app.MapCompanionEndpoints();
 
         app.Run();
