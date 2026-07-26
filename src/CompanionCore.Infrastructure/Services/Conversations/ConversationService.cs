@@ -21,12 +21,18 @@ public class ConversationService : IConversationService
 
     public async Task<ChatResponse> ChatAsync(ChatRequest request)
     {
-        // Load the existing conversation or create a new one.
-        var conversation = request.ConversationId.HasValue
-            ? await _dbContext.Conversations
-                .FindAsync(request.ConversationId.Value)
-            : null;
+        // Load the existing conversation (if one was supplied).
+        Conversation? conversation = null;
 
+        if (request.ConversationId.HasValue)
+        {
+            conversation = await _dbContext.Conversations
+                .FirstOrDefaultAsync(c =>
+                    c.Id == request.ConversationId.Value &&
+                    c.CompanionId == request.CompanionId);
+        }
+
+        // Create a new conversation if necessary.
         if (conversation == null)
         {
             conversation = new Conversation
@@ -34,12 +40,15 @@ public class ConversationService : IConversationService
                 Id = Guid.NewGuid(),
                 CompanionId = request.CompanionId,
                 StartedAt = DateTime.UtcNow,
-                LastMessageAt = DateTime.UtcNow
+                LastMessageAt = DateTime.UtcNow,
+
+                // Use the user's first message as the default title.
+                Title = request.Message.Length <= 40
+                    ? request.Message
+                    : request.Message[..40] + "..."
             };
 
             _dbContext.Conversations.Add(conversation);
-
-            await _dbContext.SaveChangesAsync();
         }
 
         // Load the selected companion.
@@ -63,9 +72,10 @@ public class ConversationService : IConversationService
 
         _dbContext.ConversationMessages.Add(userMessage);
 
+        // Save conversation + first message together.
         await _dbContext.SaveChangesAsync();
 
-        // Build the messages that will be sent to the AI.
+        // Build the messages sent to the AI.
         var messages = new List<ChatMessage>
         {
             new ChatMessage
@@ -75,7 +85,7 @@ public class ConversationService : IConversationService
             }
         };
 
-        // Load the conversation history.
+        // Load conversation history.
         var history = await _dbContext.ConversationMessages
             .Where(m => m.ConversationId == conversation.Id)
             .OrderBy(m => m.Timestamp)

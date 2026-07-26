@@ -1,8 +1,7 @@
 import type { Companion } from "../models/Companion";
-
+import type { ConversationSummary } from "../models/ConversationSummary";
 
 const API_URL = "https://localhost:7266/api/companions";
-
 
 export async function getCompanions(): Promise<Companion[]> {
 
@@ -23,11 +22,24 @@ export async function getCompanion(
         `${API_URL}/${id}`
     );
 
-
     if (!response.ok) {
         throw new Error("Failed to load companion");
     }
 
+    return await response.json();
+}
+
+export async function getCompanionConversations(
+    companionId: string
+): Promise<ConversationSummary[]> {
+
+    const response = await fetch(
+        `${API_URL}/${companionId}/conversations`
+    );
+
+    if (!response.ok) {
+        throw new Error("Failed to load conversations");
+    }
 
     return await response.json();
 }
@@ -46,11 +58,9 @@ export async function createCompanion(
         body: JSON.stringify(companion)
     });
 
-
     if (!response.ok) {
         throw new Error("Failed to create companion");
     }
-
 
     return await response.json();
 }
@@ -73,11 +83,9 @@ export async function updateCompanion(
         }
     );
 
-
     if (!response.ok) {
         throw new Error("Failed to update companion");
     }
-
 
     return await response.json();
 }
